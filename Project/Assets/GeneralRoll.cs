@@ -8,18 +8,34 @@
 		
 		public float minSwipeDistX;
 		
+		private bool BottomCol = false;
+		
 		private Vector2 startPos;
 
 		private GameObject doner;
-		void Start() {
-//		coll = GetComponent<Collider>();
-		doner = GameObject.Find("Doner");
+	
+
+	/*void OnCollisionEnter (Collision col) //работает для сталкивающися тел
+	{
+		if(col.gameObject.tag == "Bottom")
+		{
+			BottomCol = true;
 		}
+	}*/
+
+
+	void Start() {
+		doner = GameObject.Find ("Doner");
+		//		coll = GetComponent<Collider>();
+			
+		}
+
 
 		void Update()
 		{
-			//#if UNITY_ANDROID
-			if (Input.touchCount > 0) 
+
+		//#if UNITY_ANDROID
+		if (Input.touchCount > 0) 
 				
 			{
 				
@@ -32,6 +48,18 @@
 				{
 					
 				case TouchPhase.Began:
+
+					Ray ray = Camera.main.ScreenPointToRay (touch.position);
+
+					RaycastHit hit = new RaycastHit();;
+
+					if (collider.Raycast (ray, out hit, 100F)) {
+
+						if (hit.collider.tag == "Bottom")
+
+							BottomCol = true;
+
+					}
 					
 					startPos = touch.position;
 					
@@ -49,15 +77,15 @@
 						
 						float swipeValue = Mathf.Sign(touch.position.y - startPos.y);
 						
-						if (swipeValue > 0)//up swipe
+					if (swipeValue > 0 && BottomCol == true){//up swipe
 							
 							doner.animation.Play ("Take 001");
-							
+							BottomCol = false;
+					}
+
 						else if (swipeValue < 0)//down swipe
 								
-							//doner.animation.Play ("Take 0010");
-							doner.animation["Take001"].speed= -1;
-							doner.animation.Play ("Take 001");
+							doner.animation.Play ("Take 0010");
 					
 					}
 					
