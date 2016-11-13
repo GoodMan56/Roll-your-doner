@@ -7,13 +7,32 @@
 		public float minSwipeDistY;
 		
 		public float minSwipeDistX;
+
+		/*public Collider Top; //не видит коллаидеры родительских обьектов донера
+
+		public Collider Bot;
 		
+		public Collider Left;
+
+		public Collider Right;*/
+		
+		private GameObject doner;
+
 		private bool BottomCol = false;
+
+		private bool TopCol = false;
+
+		private bool RightCol = false;
+
+		private bool LeftCol = false;
 		
 		private Vector2 startPos;
 
-		private GameObject doner;
-	
+		private GameObject trash;
+		
+			
+
+	    private Collider coll;
 
 	/*void OnCollisionEnter (Collision col) //работает для сталкивающися тел
 	{
@@ -26,7 +45,7 @@
 
 	void Start() {
 		doner = GameObject.Find ("Doner");
-		//		coll = GetComponent<Collider>();
+		coll = GetComponent<Collider>();
 			
 		}
 
@@ -51,16 +70,35 @@
 
 					Ray ray = Camera.main.ScreenPointToRay (touch.position);
 
-					RaycastHit hit = new RaycastHit();;
+					RaycastHit hit = new RaycastHit();
 
-					if (collider.Raycast (ray, out hit, 100F)) {
+					if (coll.Raycast (ray, out hit, 100F)) {
 
-						if (hit.collider.tag == "Bottom")
+						
+						if (hit.collider.name == "Bot")
 
 							BottomCol = true;
+							
 
+						
+						else if (hit.collider.name == "Top")
+							
+							TopCol = true;
+						
+
+
+						else if (hit.collider.name == "Left")
+								
+							LeftCol = true;
+							
+
+
+						else if (hit.collider.name == "Right")
+								
+							RightCol = true;
+						
 					}
-					
+
 					startPos = touch.position;
 					
 					break;
@@ -80,12 +118,23 @@
 					if (swipeValue > 0 && BottomCol == true){//up swipe
 							
 							doner.animation.Play ("Take 001");
+
 							BottomCol = false;
+							
+							/*trash = GameObject.FindWithTag("Bot");
+							
+							Destroy (trash);*/
 					}
 
-						else if (swipeValue < 0)//down swipe
+						else if (swipeValue < 0 && TopCol == true)//down swipe
 								
 							doner.animation.Play ("Take 0010");
+
+							TopCol = false;
+
+							/*trash = GameObject.FindWithTag("Top");
+							
+							Destroy (trash);*/
 					
 					}
 					
@@ -97,13 +146,27 @@
 						
 						float swipeValue = Mathf.Sign(touch.position.x - startPos.x);
 						
-						if (swipeValue > 0)//right swipe
+						if (swipeValue > 0 && LeftCol == true){//right swipe
 							
 							doner.animation.Play ("Take 0011");
+
+							RightCol = false;
+						
+							/*trash = GameObject.FindWithTag("Left");
+
+							Destroy (trash);*/
+						 	
+					}
+
+						else if (swipeValue < 0 && RightCol == true)//left swipe
 					
-						/*else if (swipeValue < 0)//left swipe
-								
-							doner.animation.Play ("Take 001");*/
+							doner.animation.Play ("Take 0012");
+
+							LeftCol = false;
+
+							/*trash = GameObject.FindWithTag("Right");
+							
+							Destroy (trash);*/
 					
 					}
 					break;
