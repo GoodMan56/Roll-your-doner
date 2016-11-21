@@ -8,7 +8,7 @@
 		
 		public float minSwipeDistX;
 
-		/*public Collider Top; //не видит коллаидеры родительских обьектов донера
+		/*public Collider Top; //не видит коллаидеры обьектов донера
 
 		public Collider Bot;
 		
@@ -28,9 +28,7 @@
 		
 		private Vector2 startPos;
 
-		private GameObject trash;
-		
-			
+		private GameObject trash;		
 
 	    private Collider coll;
 
@@ -67,6 +65,10 @@
 				{
 					
 				case TouchPhase.Began:
+					
+					float swipeDistVertical = (new Vector3(0, touch.position.y, 0) - new Vector3(0, startPos.y, 0)).magnitude; //отслеживание позиции вертикального свайпа
+				
+					float swipeValue = Mathf.Sign(touch.position.y - startPos.y);//свайп по у
 
 					Ray ray = Camera.main.ScreenPointToRay (touch.position);
 
@@ -74,29 +76,34 @@
 
 					if (coll.Raycast (ray, out hit, 100F)) {
 
+					if (swipeDistVertical > minSwipeDistY) //если свайп вертикальный
 						
-						if (hit.collider.name == "Bot")
-
-							BottomCol = true;
+					{
 							
+							if (hit.collider.name == "Bot" && swipeValue > 0){
 
-						
-						else if (hit.collider.name == "Top")
-							
-							TopCol = true;
-						
-
-
-						else if (hit.collider.name == "Left")
+								doner.animation.Play ("Take 001");								
 								
-							LeftCol = true;
-							
-
-
-						else if (hit.collider.name == "Right")
 								
-							RightCol = true;
-						
+							}	
+							
+							else if (hit.collider.name == "Top" && swipeValue < 0){
+								
+								doner.animation.Play ("Take 0010");
+							
+							}
+
+							else if (hit.collider.name == "Left")
+									
+								LeftCol = true;
+								
+
+
+							else if (hit.collider.name == "Right")
+									
+								RightCol = true;
+							
+						}
 					}
 
 					startPos = touch.position;
@@ -107,38 +114,8 @@
 					
 				case TouchPhase.Ended:
 					
-					float swipeDistVertical = (new Vector3(0, touch.position.y, 0) - new Vector3(0, startPos.y, 0)).magnitude;
 					
-					if (swipeDistVertical > minSwipeDistY) 
-						
-					{
-						
-						float swipeValue = Mathf.Sign(touch.position.y - startPos.y);
-						
-					if (swipeValue > 0 && BottomCol == true){//up swipe
-							
-							doner.animation.Play ("Take 001");
-
-							BottomCol = false;
-							
-							/*trash = GameObject.FindWithTag("Bot");
-							
-							Destroy (trash);*/
-					}
-
-						else if (swipeValue < 0 && TopCol == true)//down swipe
-								
-							doner.animation.Play ("Take 0010");
-
-							TopCol = false;
-
-							/*trash = GameObject.FindWithTag("Top");
-							
-							Destroy (trash);*/
-					
-					}
-					
-					float swipeDistHorizontal = (new Vector3(touch.position.x,0, 0) - new Vector3(startPos.x, 0, 0)).magnitude;
+				/*	float swipeDistHorizontal = (new Vector3(touch.position.x,0, 0) - new Vector3(startPos.x, 0, 0)).magnitude;
 					
 					if (swipeDistHorizontal > minSwipeDistX) 
 						
@@ -154,7 +131,7 @@
 						
 							/*trash = GameObject.FindWithTag("Left");
 
-							Destroy (trash);*/
+							Destroy (trash);
 						 	
 					}
 
@@ -166,9 +143,9 @@
 
 							/*trash = GameObject.FindWithTag("Right");
 							
-							Destroy (trash);*/
+							Destroy (trash);
 					
-					}
+					}*/
 					break;
 				}
 			}
