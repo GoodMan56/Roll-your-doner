@@ -3,6 +3,9 @@
 	
 	public class GeneralRoll : MonoBehaviour 
 	{
+
+		public Transform endPos;
+		public Transform stPos;
 		
 		public float minSwipeDistY;
 		
@@ -41,13 +44,16 @@
 	}*/
 
 
+	private int startID = 0;
+
+
 	void Start() {
 		doner = GameObject.Find ("Doner");
 		coll = GetComponent<Collider>();
 			
 		}
 
-
+	private float vel = 0.0F;
 		void Update()
 		{
 
@@ -63,8 +69,26 @@
 				switch (touch.phase) 
 					
 				{
+				case TouchPhase.Stationary:
+				case TouchPhase.Moved:
+			{
+				float swipeDistVertical2 = (new Vector3(0, touch.position.y, 0) - new Vector3(0, startPos.y, 0)).magnitude; //отслеживание позиции вертикального свайпа
+				
+				float swipeValue2 = Mathf.Abs(touch.position.y - Camera.main.WorldToScreenPoint(stPos.position).y) / Mathf.Abs(Camera.main.WorldToScreenPoint(endPos.position).y - Camera.main.WorldToScreenPoint(stPos.position).y);//свайп по у
+
+				Debug.Log(swipeValue2);
+				Debug.Log(startID);
+
+				if(startID == 1) {
+					float oldTime = doner.animation["Take 001"].normalizedTime;
+					doner.animation["Take 001"].normalizedTime = Mathf.SmoothDamp(oldTime, Mathf.Clamp01(swipeValue2), ref vel, 0.06f);	
+				}
+			}
+				break;
 					
 				case TouchPhase.Began:
+					startID = 0;
+				vel = 0.0F;
 					
 					float swipeDistVertical = (new Vector3(0, touch.position.y, 0) - new Vector3(0, startPos.y, 0)).magnitude; //отслеживание позиции вертикального свайпа
 				
@@ -76,13 +100,16 @@
 
 					if (coll.Raycast (ray, out hit, 100F)) {
 
-					if (swipeDistVertical > minSwipeDistY) //если свайп вертикальный
+					//if (swipeDistVertical > minSwipeDistY) //если свайп вертикальный
 						
 					{
 							
-							if (hit.collider.name == "Bot" && swipeValue > 0){
+							if (hit.collider.name == "Bot"/* && swipeValue >= 0*/){
 
 								doner.animation.Play ("Take 001");								
+							doner.animation["Take 001"].normalizedSpeed = 0;
+							startID = 1;
+							Debug.LogError("!!!!!");
 								
 								
 							}	
@@ -90,6 +117,7 @@
 							else if (hit.collider.name == "Top" && swipeValue < 0){
 								
 								doner.animation.Play ("Take 0010");
+							startID = 2;
 							
 							}
 

@@ -1,0 +1,5 @@
+The Fruit Ninja style slice-by-line demo and the Sliceable demo may be downloaded from our web page, here:
+
+http://noblemuffins.com/?page_id=65
+
+They were removed from this package due to problems when people modify demo code then update Turbo Slicer.
